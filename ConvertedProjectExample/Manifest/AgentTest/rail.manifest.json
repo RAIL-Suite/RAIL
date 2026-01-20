@@ -1,0 +1,501 @@
+{
+  "name": "AgentTest",
+  "version": "1.0.0",
+  "runtime_type": "dotnet-ipc",
+  "entry_point": "C:\\Work\\Project\\Alchemy\\AgentTest\\bin\\Debug\\net9.0-windows\\AgentTest.dll",
+  "description": "Scanned from AgentTest",
+  "tools": [
+    {
+      "name": "Main",
+      "description": "Main() : Void",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "executeDP",
+      "description": "executeDP(List\u00601 points, String colorName, Double thickness) : Void",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "points": {
+            "type": "OBJECT",
+            "description": "Object"
+          },
+          "colorName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "thickness": {
+            "type": "OBJECT",
+            "description": "Double"
+          }
+        },
+        "required": [
+          "points",
+          "colorName",
+          "thickness"
+        ]
+      }
+    },
+    {
+      "name": "Clear",
+      "description": "Clear() : Void",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "AddCustomer",
+      "description": "AddCustomer(String firstName, String lastName, String email, String phone, String address) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "firstName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "lastName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "email": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "phone": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "address": {
+            "type": "OBJECT",
+            "description": "String"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "DeleteCustomer",
+      "description": "DeleteCustomer(Int32 id) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "OBJECT",
+            "description": "Int32"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "UpdateCustomer",
+      "description": "UpdateCustomer(Int32 id, String firstName, String lastName, String email, String phone, String address) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "OBJECT",
+            "description": "Int32"
+          },
+          "firstName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "lastName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "email": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "phone": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "address": {
+            "type": "OBJECT",
+            "description": "String"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "ShowCustomerDetails",
+      "description": "ShowCustomerDetails(Int32 id) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "OBJECT",
+            "description": "Int32"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "SearchCustomers",
+      "description": "SearchCustomers(String query) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "query": {
+            "type": "OBJECT",
+            "description": "String"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "GetAllCustomers",
+      "description": "GetAllCustomers() : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "DrawPoints",
+      "description": "DrawPoints(List\u00601 points, String color, Double thickness) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "points": {
+            "type": "OBJECT",
+            "description": "Object"
+          },
+          "color": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "thickness": {
+            "type": "OBJECT",
+            "description": "Double"
+          }
+        },
+        "required": [
+          "points"
+        ]
+      }
+    },
+	{
+	  "name": "GetCanvasInfo",
+	  "description": "GetCanvasInfo() : Dictionary\u00602",
+	  "class": "AgentTest.ViewModels.MainViewModel",
+	  "parameters": {
+		"type": "OBJECT",
+		"properties": {},
+		"required": []
+	  }
+	},
+    {
+      "name": "ClearDrawing",
+      "description": "ClearDrawing() : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "DrawCircle",
+      "description": "DrawCircle(Double centerX, Double centerY, Double radius, String color, Double thickness) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "centerX": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "centerY": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "radius": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "color": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "thickness": {
+            "type": "OBJECT",
+            "description": "Double"
+          }
+        },
+        "required": [
+          "centerX",
+          "centerY",
+          "radius"
+        ]
+      }
+    },
+    {
+      "name": "DrawRectangle",
+      "description": "DrawRectangle(Double x, Double y, Double width, Double height, String color, Double thickness) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "x": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "y": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "width": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "height": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "color": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "thickness": {
+            "type": "OBJECT",
+            "description": "Double"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ]
+      }
+    },
+    {
+      "name": "DrawLine",
+      "description": "DrawLine(Double x1, Double y1, Double x2, Double y2, String color, Double thickness) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "x1": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "y1": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "x2": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "y2": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "color": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "thickness": {
+            "type": "OBJECT",
+            "description": "Double"
+          }
+        },
+        "required": [
+          "x1",
+          "y1",
+          "x2",
+          "y2"
+        ]
+      }
+    },
+    {
+      "name": "DrawEllipse",
+      "description": "DrawEllipse(Double centerX, Double centerY, Double radiusX, Double radiusY, String color, Double thickness) : String",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "centerX": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "centerY": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "radiusX": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "radiusY": {
+            "type": "OBJECT",
+            "description": "Double"
+          },
+          "color": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "thickness": {
+            "type": "OBJECT",
+            "description": "Double"
+          }
+        },
+        "required": [
+          "centerX",
+          "centerY",
+          "radiusX",
+          "radiusY"
+        ]
+      }
+    },
+    {
+      "name": "Add",
+      "description": "Add(String firstName, String lastName, String email, String phone, String address) : Customer",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "firstName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "lastName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "email": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "phone": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "address": {
+            "type": "OBJECT",
+            "description": "String"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email"
+        ]
+      }
+    },
+    {
+      "name": "Delete",
+      "description": "Delete(Int32 id) : Boolean",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "OBJECT",
+            "description": "Int32"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "Update",
+      "description": "Update(Int32 id, String firstName, String lastName, String email, String phone, String address) : Boolean",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "OBJECT",
+            "description": "Int32"
+          },
+          "firstName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "lastName": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "email": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "phone": {
+            "type": "OBJECT",
+            "description": "String"
+          },
+          "address": {
+            "type": "OBJECT",
+            "description": "String"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "GetById",
+      "description": "GetById(Int32 id) : Customer",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "OBJECT",
+            "description": "Int32"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "Search",
+      "description": "Search(String query) : List\u00601",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "query": {
+            "type": "OBJECT",
+            "description": "String"
+          }
+        },
+        "required": [
+          "query"
+        ]
+      }
+    },
+    {
+      "name": "GetAll",
+      "description": "GetAll() : List\u00601",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}

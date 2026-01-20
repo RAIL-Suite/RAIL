@@ -1,0 +1,343 @@
+{
+  "name": "WorkflowDemo",
+  "version": "1.0.0",
+  "runtime_type": "dotnet-ipc",
+  "entry_point": "C:\\Work\\Project\\Alchemy\\A_WorkflowTest\\WorkflowDemo\\bin\\Debug\\net8.0-windows\\WorkflowDemo.dll",
+  "description": "Manufacturing Production Management System - Controls machines, orders, inventory and products. Use this for production planning, machine status queries, order management and inventory checks.",
+  "tools": [
+    {
+      "name": "GetAllProducts",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Returns a list of all available products in the catalog. Each product has: Code (e.g. PUMP-001, VALVE-001), Name, and ProductionTimeMinutes. Use this to discover what products can be manufactured.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "GetProduct",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Get details of a specific product by its code. Returns name, price, and production time. Product codes are like: PUMP-001, PUMP-002, VALVE-001, etc.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "productCode": {
+            "type": "STRING",
+            "description": "Product code in format XXXX-NNN (e.g. PUMP-001, VALVE-001)"
+          }
+        },
+        "required": ["productCode"]
+      }
+    },
+    {
+      "name": "GetProductBOM",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Get the Bill of Materials (BOM) for a product. Returns list of required components with quantities and costs needed to manufacture one unit of the product.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "productCode": {
+            "type": "STRING",
+            "description": "Product code in format XXXX-NNN (e.g. PUMP-001)"
+          }
+        },
+        "required": ["productCode"]
+      }
+    },
+    {
+      "name": "GetProductCost",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Calculate the total material cost for producing a specific quantity of a product. Returns cost breakdown per component and total cost.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "productCode": {
+            "type": "STRING",
+            "description": "Product code in format XXXX-NNN"
+          },
+          "quantity": {
+            "type": "INTEGER",
+            "description": "Number of units to produce (positive integer)"
+          }
+        },
+        "required": ["productCode", "quantity"]
+      }
+    },
+    {
+      "name": "CheckInventory",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Check inventory level for a specific component. Returns: Code, Name, InStock quantity, Minimum threshold, StockStatus (ok/low/critical), Supplier, Location.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "componentCode": {
+            "type": "STRING",
+            "description": "Component code (e.g. MTR-DC12, PMP-BODY, VLV-GATE)"
+          }
+        },
+        "required": ["componentCode"]
+      }
+    },
+    {
+      "name": "CheckProductAvailability",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Check if all materials are available to produce a given quantity of a product. Returns CanProduce (true/false) and list of Shortages with details if any components are insufficient.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "productCode": {
+            "type": "STRING",
+            "description": "Product code to check"
+          },
+          "quantity": {
+            "type": "INTEGER",
+            "description": "Number of units to produce"
+          }
+        },
+        "required": ["productCode", "quantity"]
+      }
+    },
+    {
+      "name": "GetAllMachinesStatus",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Get status of ALL production machines in the factory. Returns list with: Id (M1, M2, M3), Name, Status (free/busy/error), BusyUntil time, CurrentOrderId. Use this to see the complete factory floor status.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "GetMachineStatus",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Get detailed status of a SPECIFIC machine by its ID. Machine IDs are: M1, M2, M3. Returns: Id, Name, Status (free/busy/error), BusyUntil datetime, CurrentOrderId.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "machineId": {
+            "type": "STRING",
+            "description": "Machine ID. MUST be one of: M1, M2, M3"
+          }
+        },
+        "required": ["machineId"]
+      }
+    },
+    {
+      "name": "GetNextAvailableMachine",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Find the next machine that will be available for production. Returns the first available machine (prioritizes 'free' machines, excludes 'error' machines). Use this to find alternatives when a machine fails.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "SetMachineStatus",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Change the status of a machine. Use this to mark machines as broken (error), available (free), or occupied (busy). IMPORTANT: status parameter MUST be exactly one of: 'free', 'busy', 'error'. Any other value will fail.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "machineId": {
+            "type": "STRING",
+            "description": "Machine ID. MUST be one of: M1, M2, M3"
+          },
+          "status": {
+            "type": "STRING",
+            "description": "New status. MUST be exactly one of: 'free' (available), 'busy' (working), 'error' (broken/fault). Use 'error' for machine failures, breakdowns, or faults."
+          }
+        },
+        "required": ["machineId", "status"]
+      }
+    },
+    {
+      "name": "GetPendingOrders",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Get all orders that are pending or scheduled (not yet completed/cancelled). Returns: Id, Customer, Product code, Quantity, Status, Created date. Use this to see work queue and orders that might be affected by machine issues.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "EstimateOrderCompletion",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Estimate when a hypothetical order would be completed if created now. Returns: estimated Machine, ProductionTime, EstimatedStart and EstimatedEnd datetimes.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "productCode": {
+            "type": "STRING",
+            "description": "Product code to estimate"
+          },
+          "quantity": {
+            "type": "INTEGER",
+            "description": "Number of units"
+          }
+        },
+        "required": ["productCode", "quantity"]
+      }
+    },
+    {
+      "name": "CreateOrder",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Create a new production order in the system. Returns confirmation with the new Order ID. The order starts in 'pending' status.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "customer": {
+            "type": "STRING",
+            "description": "Customer name (e.g. 'Rossi Srl', 'Bianchi & Co')"
+          },
+          "productCode": {
+            "type": "STRING",
+            "description": "Product code to produce"
+          },
+          "quantity": {
+            "type": "INTEGER",
+            "description": "Number of units to produce"
+          }
+        },
+        "required": ["customer", "productCode", "quantity"]
+      }
+    },
+    {
+      "name": "AutoScheduleOrder",
+      "class": "WorkflowDemo.RailBridge.RailFunctions",
+      "description": "Automatically assign a pending order to the next available machine. The order must exist and be in pending status. Updates both order status and machine status.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "orderId": {
+            "type": "INTEGER",
+            "description": "Order ID (numeric, e.g. 1, 2, 3)"
+          }
+        },
+        "required": ["orderId"]
+      }
+    },
+    {
+      "name": "GetAllComponents",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "Get all inventory components. Returns list of all raw materials and parts in stock with quantities and status.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "GetAllMachines",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "Get raw list of all machines. For formatted output, prefer GetAllMachinesStatus instead.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "GetAllOrders",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "Get ALL orders (including completed and cancelled). For only active orders, prefer GetPendingOrders instead.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "UpdateMachineStatus",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "Low-level machine status update. Prefer SetMachineStatus for simpler API. Status must be: 'free', 'busy', or 'error'.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "STRING",
+            "description": "Machine ID (M1, M2, M3)"
+          },
+          "status": {
+            "type": "STRING",
+            "description": "Status: 'free', 'busy', or 'error'"
+          },
+          "busyUntil": {
+            "type": "STRING",
+            "description": "Optional datetime when machine becomes free (for 'busy' status)"
+          }
+        },
+        "required": ["id", "status"]
+      }
+    },
+    {
+      "name": "UpdateOrderStatus",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "Update the status of an existing order. Order statuses are: 'pending', 'scheduled', 'completed', 'cancelled'.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "id": {
+            "type": "INTEGER",
+            "description": "Order ID"
+          },
+          "status": {
+            "type": "STRING",
+            "description": "New status: 'pending', 'scheduled', 'completed', 'cancelled'"
+          },
+          "machineId": {
+            "type": "STRING",
+            "description": "Optional: Machine ID if scheduling"
+          }
+        },
+        "required": ["id", "status"]
+      }
+    },
+    {
+      "name": "UpdateComponentStock",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "Update the stock quantity of a component.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "code": {
+            "type": "STRING",
+            "description": "Component code"
+          },
+          "newQty": {
+            "type": "INTEGER",
+            "description": "New stock quantity"
+          }
+        },
+        "required": ["code", "newQty"]
+      }
+    },
+    {
+      "name": "GetBom",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "Get Bill of Materials for a product. Prefer GetProductBOM for formatted output.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {
+          "productCode": {
+            "type": "STRING",
+            "description": "Product code"
+          }
+        },
+        "required": ["productCode"]
+      }
+    },
+    {
+      "name": "ResetDatabase",
+      "class": "WorkflowDemo.Services.DatabaseService",
+      "description": "DANGEROUS: Resets the entire database to initial demo state. All orders and status changes will be lost.",
+      "parameters": {
+        "type": "OBJECT",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}

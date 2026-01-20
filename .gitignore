@@ -1,0 +1,152 @@
+# ============================================================================
+# LiquidLLM - Professional .gitignore
+# ============================================================================
+
+# ============================================================================
+# .NET / C#
+# ============================================================================
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.cache
+*.log
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+project.lock.json
+artifacts/
+
+# Build output
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.obj
+*.lib
+*.exp
+
+# Visual Studio
+.vs/
+*.vshost.exe
+*.pidb
+*.svclog
+
+# Rider / JetBrains
+.idea/
+*.DotSettings.user
+
+# ============================================================================
+# C++ / CMake
+# ============================================================================
+build/
+build-*/
+build_*/
+dist/
+dist-*/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+compile_commands.json
+install_manifest.txt
+_deps/
+
+# Generated Visual Studio files from CMake
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# vcpkg (users install themselves)
+vcpkg/
+vcpkg_installed/
+
+# ============================================================================
+# Python
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+env/
+venv/
+*.egg-info/
+.installed.cfg
+*.egg
+.mypy_cache/
+.pytest_cache/
+
+# ============================================================================
+# Node.js / TypeScript
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+*.tsbuildinfo
+.npm
+.eslintcache
+
+# ============================================================================
+# Secrets & Credentials (CRITICAL!)
+# ============================================================================
+*.key
+*.pem
+*secret*
+*credential*
+client_secret*.json
+api_key*.txt
+.env
+.env.*
+!.env.example
+secrets/
+appsettings.*.json
+user_settings.json
+
+# ============================================================================
+# OS Generated
+# ============================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+*.lnk
+
+# ============================================================================
+# IDE / Editor
+# ============================================================================
+*.swp
+*.swo
+*~
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# ============================================================================
+# Test / Temporary
+# ============================================================================
+test_file.txt
+output.txt
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# ============================================================================
+# Keep these (important!)
+# ============================================================================
+!.gitkeep
+!LICENSE
+!README.md
+!CONTRIBUTING.md
+!CHANGELOG.md
+!.github/

@@ -1,0 +1,84 @@
+<UserControl x:Class="WpfRagApp.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="550" d:DesignWidth="800">
+    <Grid Background="#1E1E1E">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="30,20" BorderBrush="#333333" BorderThickness="0,0,0,1">
+            <TextBlock Text="Settings" FontSize="24" FontWeight="Bold" Foreground="#FFFFFF"/>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="30,20,30,20" HorizontalAlignment="Stretch">
+                
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- SECTION: Asset Library Path -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <TextBlock Text="📂 Asset Library" FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" Margin="0,0,0,8"/>
+                <TextBlock Text="Configure where WpfRagApp looks for manifest files (Chips)" 
+                           Foreground="#888888" FontSize="12" Margin="0,0,0,16"/>
+                
+                <Grid Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Path TextBox (readonly, user uses Browse) -->
+                    <TextBox Grid.Column="0" 
+                             Text="{Binding AssetsRootPath, UpdateSourceTrigger=PropertyChanged}" 
+                             IsReadOnly="True"
+                             Background="#2D2D2D" Foreground="#CCCCCC" BorderBrush="#444444"
+                             Padding="12,10" FontSize="13" VerticalContentAlignment="Center"/>
+                    
+                    <!-- Validity Icon -->
+                    <TextBlock Grid.Column="1" 
+                               Text="{Binding AssetsPathStatusIcon}" 
+                               FontSize="18" VerticalAlignment="Center" Margin="10,0"
+                               Foreground="{Binding IsAssetsPathValid, Converter={StaticResource BoolToColorConverter}}"/>
+                    
+                    <!-- Browse Button -->
+                    <Button Grid.Column="2" Content="Browse..." 
+                            Command="{Binding BrowseAssetsPathCommand}"
+                            Padding="16,10" Background="#3C3C3C" Foreground="#FFFFFF" 
+                            BorderBrush="#555555" BorderThickness="1" FontSize="13"/>
+                </Grid>
+
+                <!-- Separator -->
+                <Border Height="1" Background="#333333" Margin="0,0,0,30"/>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- SECTION: API Keys -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <TextBlock Text="🔑 API Keys" FontSize="18" FontWeight="SemiBold" Foreground="#FFFFFF" Margin="0,0,0,20"/>
+                
+                <TextBlock Text="Gemini API Key" Foreground="#CCCCCC" Margin="0,0,0,8"/>
+                <TextBox Text="{Binding GeminiApiKey, UpdateSourceTrigger=PropertyChanged}" 
+                         Margin="0,0,0,20" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Text="OpenAI API Key" Foreground="#CCCCCC" Margin="0,0,0,8"/>
+                <TextBox Text="{Binding OpenAIApiKey, UpdateSourceTrigger=PropertyChanged}" 
+                         Margin="0,0,0,20" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Text="Anthropic API Key" Foreground="#CCCCCC" Margin="0,0,0,8"/>
+                <TextBox Text="{Binding AnthropicApiKey, UpdateSourceTrigger=PropertyChanged}" 
+                         Margin="0,0,0,20" HorizontalAlignment="Stretch"/>
+
+                <Button Content="Save Settings" Command="{Binding SaveCommand}" 
+                        HorizontalAlignment="Left" Padding="30,12" Margin="0,10,0,0"
+                        Background="#007ACC" Foreground="White" BorderThickness="0" FontWeight="Bold" FontSize="14"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
+

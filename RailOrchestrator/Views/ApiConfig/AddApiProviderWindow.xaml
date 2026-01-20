@@ -1,0 +1,154 @@
+<Window x:Class="WpfRagApp.Views.ApiConfig.AddApiProviderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add API Provider" 
+        Height="720" Width="600"
+        WindowStartupLocation="CenterOwner"
+        Background="#1E1E1E"
+        ResizeMode="NoResize">
+    
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="🌐 Add New API Provider" 
+                       Foreground="White" 
+                       FontSize="22" 
+                       FontWeight="Bold"/>
+            <TextBlock Text="Configure a new web API integration with automatic skill import" 
+                       Foreground="#888" 
+                       FontSize="13" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+        
+        <!-- Provider Name -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,16">
+            <TextBlock Text="Provider Name *" Foreground="#CCC" Margin="0,0,0,6"/>
+            <TextBox x:Name="ProviderNameInput"
+                     Background="#2D2D2D"
+                     Foreground="#E1E1E1"
+                     BorderBrush="#444"
+                     Padding="10,8"
+                     FontSize="14"/>
+            <TextBlock Text="e.g., Gmail, HubSpot, Stripe" 
+                       Foreground="#666" 
+                       FontSize="11" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+        
+        <!-- OpenAPI Spec URL -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,16">
+            <TextBlock Text="OpenAPI Specification URL *" Foreground="#CCC" Margin="0,0,0,6"/>
+            <TextBox x:Name="OpenApiUrlInput"
+                     Background="#2D2D2D"
+                     Foreground="#E1E1E1"
+                     BorderBrush="#444"
+                     Padding="10,8"
+                     FontSize="14"
+                     Text=""/>
+            <TextBlock Text="URL to OpenAPI/Swagger JSON spec (e.g., https://api.example.com/openapi.json)" 
+                       Foreground="#666" 
+                       FontSize="11" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+        
+        <!-- Auth Type -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,16">
+            <TextBlock Text="Authentication Type" Foreground="#CCC" Margin="0,0,0,6"/>
+            <ComboBox x:Name="AuthTypeCombo"
+                      Background="#2D2D2D"
+                      Foreground="#2D2D2D"
+                      Padding="10,8"
+                      FontSize="14"
+                      SelectedIndex="0">
+                <ComboBoxItem Content="API Key" Tag="apikey"/>
+                <ComboBoxItem Content="OAuth 2.0" Tag="oauth2"/>
+                <ComboBoxItem Content="Bearer Token" Tag="bearer"/>
+                <ComboBoxItem Content="No Authentication" Tag="none"/>
+            </ComboBox>
+        </StackPanel>
+        
+        <!-- Base URL -->
+        <StackPanel Grid.Row="4" Margin="0,0,0,16">
+            <TextBlock Text="Base URL (optional, auto-detected from spec)" Foreground="#CCC" Margin="0,0,0,6"/>
+            <TextBox x:Name="BaseUrlInput"
+                     Background="#2D2D2D"
+                     Foreground="#E1E1E1"
+                     BorderBrush="#444"
+                     Padding="10,8"
+                     FontSize="14"
+                     Text=""/>
+            <TextBlock Text="Override base URL if needed (usually auto-detected from OpenAPI spec)" 
+                       Foreground="#666" 
+                       FontSize="11" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+        
+        <!-- Display Name -->
+        <StackPanel Grid.Row="5" Margin="0,0,0,16">
+            <TextBlock Text="Display Name (optional)" Foreground="#CCC" Margin="0,0,0,6"/>
+            <TextBox x:Name="DisplayNameInput"
+                     Background="#2D2D2D"
+                     Foreground="#E1E1E1"
+                     BorderBrush="#444"
+                     Padding="10,8"
+                     FontSize="14"/>
+            <TextBlock Text="Friendly name shown in UI (uses provider name if empty)" 
+                       Foreground="#666" 
+                       FontSize="11" 
+                       Margin="0,4,0,0"/>
+        </StackPanel>
+        
+        <!-- Status / Progress -->
+        <StackPanel Grid.Row="6" Margin="0,8,0,0">
+            <TextBlock x:Name="StatusText" 
+                       Foreground="#FF6B6B" 
+                       FontSize="12"
+                       TextWrapping="Wrap"/>
+            <ProgressBar x:Name="ProgressBar"
+                         Height="4"
+                         Margin="0,8,0,0"
+                         IsIndeterminate="True"
+                         Visibility="Collapsed"
+                         Foreground="#5E9B8A"/>
+            <TextBlock x:Name="ProgressText"
+                       Foreground="#5E9B8A"
+                       FontSize="11"
+                       Margin="0,4,0,0"
+                       Visibility="Collapsed"/>
+        </StackPanel>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button x:Name="CancelButton"
+                    Content="Cancel" 
+                    Click="Cancel_Click"
+                    Width="100" 
+                    Height="36"
+                    Background="#333"
+                    Foreground="#CCC"
+                    BorderThickness="0"
+                    Margin="0,0,12,0"/>
+            <Button x:Name="CreateButton"
+                    Content="Create &amp; Import" 
+                    Click="Create_Click"
+                    Width="140" 
+                    Height="36"
+                    Background="#5E9B8A"
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    BorderThickness="0"/>
+        </StackPanel>
+    </Grid>
+</Window>
+

@@ -1,0 +1,16 @@
+# Liquid SDK - Core Dependencies
+# Python SDK for Liquid Factory Artifacts
+
+# Core parsing and type checking
+pydantic==2.8.0
+
+# Parser dependencies (AST parsing - optional, used by builder)
+tree-sitter==0.21.3
+
+# C# Support (optional - only needed for C# artifacts)
+# Uncomment if you need C# execution support:
+# pythonnet==3.0.3
+
+# Testing dependencies (dev only)
+# pytest==8.2.0
+# pytest-cov==5.0.0

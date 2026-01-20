@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    
+    <!-- NuGet Package Configuration -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>RailFactory.Core</PackageId>
+    <Version>1.7.4</Version>
+    <AssemblyVersion>1.7.2.0</AssemblyVersion>
+    <FileVersion>1.7.2.0</FileVersion>
+    <Authors>Alchemy Team</Authors>
+    <Company>Alchemy</Company>
+    <Product>Rail SDK</Product>
+    <Description>Rail Factory Core SDK - .NET wrapper for Rail Factory runtime. Enables LLM-based runtime control and artifact execution.</Description>
+    <PackageTags>Rail;factory;sdk;llm;runtime;artifacts</PackageTags>
+    <RepositoryUrl>https://github.com/yourorg/Rail-sdk</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    
+    <!-- Include dependencies in package -->
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <PackageOutputPath>$(SolutionDir)nupkgs</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dnlib" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.Reflection.MetadataLoadContext" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- Embed Python Runtime as Resources -->
+  <ItemGroup>
+    <!-- CLI Executor -->
+    <EmbeddedResource Include="..\cli\runtime.py">
+      <LogicalName>RailSDK.cli.runtime.py</LogicalName>
+    </EmbeddedResource>
+    
+    <!-- Core modules -->
+    <EmbeddedResource Include="..\core\*.py">
+      <LogicalName>RailSDK.core.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    
+    <!-- Parsers -->
+    <EmbeddedResource Include="..\parsers\*.py">
+      <LogicalName>RailSDK.parsers.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    
+    <!-- Runners -->
+    <EmbeddedResource Include="..\runners\*.py">
+      <LogicalName>RailSDK.runners.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
+
+

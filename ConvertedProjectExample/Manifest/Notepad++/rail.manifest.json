@@ -1,0 +1,32 @@
+{
+        "language": "cpp",
+		"runtime_type": "native-bridge",
+        "appName": "Notepad",
+        "functions": [
+            {
+                "name": "Notepad.fileNew",
+                "parameters": [],
+                "return_type": "void"
+            },
+            {
+                "name": "Notepad.writeText",
+                "parameters": [ { "name": "text", "type": "string" } ],
+                "return_type": "void"
+            },
+            {
+                "name": "Notepad.saveFile",
+                "parameters": [ { "name": "filename", "type": "string" } ],
+                "return_type": "void"
+            },
+            {
+                "name": "Notepad.getSelectedText",
+                "parameters": [],
+                "return_type": "string"
+            },
+            {
+                "name": "Notepad.replaceSelection",
+                "parameters": [ { "name": "text", "type": "string" } ],
+                "return_type": "void"
+            }
+        ]
+    }

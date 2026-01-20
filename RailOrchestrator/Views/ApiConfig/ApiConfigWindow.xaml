@@ -1,0 +1,196 @@
+<Window x:Class="WpfRagApp.Views.ApiConfig.ApiConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configure API" 
+        Width="480" Height="700"
+        MinWidth="400" MinHeight="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="#1E1E1E">
+    
+    <Window.Resources>
+        <!-- Text Style -->
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+        
+        <!-- Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#0090E0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#555555"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- TextBox Style -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#2D2D2D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#444"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="CaretBrush" Value="White"/>
+        </Style>
+    </Window.Resources>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock x:Name="ProviderIcon" Text="🔌" FontSize="32" VerticalAlignment="Center"/>
+            <StackPanel Margin="12,0,0,0">
+                <TextBlock x:Name="ProviderName" Text="API Name" FontSize="20" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse x:Name="StatusIndicator" Width="8" Height="8" Fill="#4CAF50" Margin="0,0,6,0"/>
+                    <TextBlock x:Name="StatusText" Text="Connected" FontSize="12" Foreground="#888"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        
+        <!-- Connection Section -->
+        <Border Grid.Row="1" Background="#252525" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="Connection" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                
+                <!-- Auth Type Selector -->
+                <ComboBox x:Name="AuthTypeCombo" Margin="0,0,0,12" Background="#2D2D2D" Foreground="#2D2D2D"
+                          SelectionChanged="AuthTypeCombo_SelectionChanged">
+                    <ComboBoxItem Content="API Key" Tag="apikey"/>
+                    <ComboBoxItem Content="OAuth 2.0" Tag="oauth2"/>
+                    <ComboBoxItem Content="Bearer Token" Tag="bearer"/>
+                </ComboBox>
+                
+                <!-- API Key Input (shown for apikey) -->
+                <StackPanel x:Name="ApiKeyPanel">
+                    <TextBlock Text="API Key" FontSize="12" Foreground="#888" Margin="0,0,0,4"/>
+                    <PasswordBox x:Name="ApiKeyInput" Background="#2D2D2D" Foreground="White" 
+                             BorderBrush="#444" Padding="8,6" Margin="0,0,0,12"/>
+                </StackPanel>
+                
+                <!-- OAuth Section (shown for oauth2) -->
+                <StackPanel x:Name="OAuthPanel" Visibility="Collapsed">
+                    <TextBlock Text="OAuth 2.0 Authentication" FontSize="12" Foreground="#888" Margin="0,0,0,8"/>
+                    <Button x:Name="OAuthButton" Style="{StaticResource ModernButton}" 
+                            Content="🔐 Connect with OAuth" Click="OAuthButton_Click"/>
+                </StackPanel>
+                
+                <!-- Connection buttons -->
+                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                    <Button x:Name="ConnectButton" Style="{StaticResource ModernButton}" 
+                            Content="Connect" Click="ConnectButton_Click"/>
+                    <Button x:Name="DisconnectButton" Style="{StaticResource ModernButton}" 
+                            Content="Disconnect" Margin="8,0,0,0" Background="#D32F2F"
+                            Click="DisconnectButton_Click" Visibility="Collapsed"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        
+        <!-- Advanced Settings -->
+        <Expander Grid.Row="2" Header="⚙️ Advanced Settings" Foreground="White" Margin="0,0,0,16">
+            <Border Background="#252525" CornerRadius="8" Padding="16" Margin="0,8,0,0">
+                <StackPanel>
+                    <!-- OAuth Configuration (shown when oauth2 selected) -->
+                    <StackPanel x:Name="OAuthConfigPanel" Margin="0,0,0,16">
+                        <TextBlock Text="🔐 OAuth 2.0 Configuration" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        
+                        <TextBlock Text="Authorization URL" FontSize="11" Foreground="#888" Margin="0,0,0,4"/>
+                        <TextBox x:Name="AuthUrlInput" Style="{StaticResource ModernTextBox}" 
+                                 Text="https://accounts.google.com/o/oauth2/v2/auth" Margin="0,0,0,8"/>
+                        
+                        <TextBlock Text="Token URL" FontSize="11" Foreground="#888" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TokenUrlInput" Style="{StaticResource ModernTextBox}" 
+                                 Text="https://oauth2.googleapis.com/token" Margin="0,0,0,8"/>
+                        
+                        <TextBlock Text="Client ID" FontSize="11" Foreground="#888" Margin="0,0,0,4"/>
+                        <TextBox x:Name="ClientIdInput" Style="{StaticResource ModernTextBox}" Margin="0,0,0,8"/>
+                        
+                        <TextBlock Text="Client Secret" FontSize="11" Foreground="#888" Margin="0,0,0,4"/>
+                        <PasswordBox x:Name="ClientSecretInput" Background="#2D2D2D" Foreground="White" 
+                                     BorderBrush="#444" Padding="8,6" Margin="0,0,0,8"/>
+                        
+                        <TextBlock Text="Scopes (comma separated)" FontSize="11" Foreground="#888" Margin="0,0,0,4"/>
+                        <TextBox x:Name="ScopesInput" Style="{StaticResource ModernTextBox}" 
+                                 Text="https://www.googleapis.com/auth/gmail.readonly" 
+                                 TextWrapping="Wrap" Height="50" AcceptsReturn="True"/>
+                    </StackPanel>
+                    
+                    <Separator Background="#444" Margin="0,0,0,16"/>
+                    
+                    <!-- Rate Limit Settings -->
+                    <TextBlock Text="📊 Rate Limiting" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Text="Requests per minute" VerticalAlignment="Center"/>
+                        <TextBox x:Name="RateLimitInput" Grid.Row="0" Grid.Column="1" 
+                                 Style="{StaticResource ModernTextBox}" Text="60"/>
+                        
+                        <TextBlock Grid.Row="1" Text="Backoff (ms)" VerticalAlignment="Center" Margin="0,8,0,0"/>
+                        <TextBox x:Name="BackoffInput" Grid.Row="1" Grid.Column="1" 
+                                 Style="{StaticResource ModernTextBox}" Text="1000" Margin="0,8,0,0"/>
+                        
+                        <TextBlock Grid.Row="2" Text="Max backoff (ms)" VerticalAlignment="Center" Margin="0,8,0,0"/>
+                        <TextBox x:Name="MaxBackoffInput" Grid.Row="2" Grid.Column="1" 
+                                 Style="{StaticResource ModernTextBox}" Text="30000" Margin="0,8,0,0"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Expander>
+        
+        <!-- Skills Info -->
+        <Border Grid.Row="3" Background="#252525" CornerRadius="8" Padding="16">
+            <StackPanel>
+                <TextBlock Text="Imported Skills" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <TextBlock x:Name="SkillCountText" Text="0 skills available" FontSize="12" Foreground="#888"/>
+                <TextBlock x:Name="LastSyncText" Text="Last sync: Never" FontSize="12" Foreground="#888"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Footer Buttons -->
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Content="Cancel" Style="{StaticResource ModernButton}" 
+                    Background="#333" Click="CancelButton_Click"/>
+            <Button Content="Save" Style="{StaticResource ModernButton}" 
+                    Margin="8,0,0,0" Click="SaveButton_Click"/>
+        </StackPanel>
+    </Grid>
+    </ScrollViewer>
+</Window>
+

@@ -1,0 +1,74 @@
+{
+    "$schema": "./runtime_plugins_schema.json",
+    "version": "1.0",
+    "supported_runtimes": [
+        {
+            "name": "DotNet",
+            "version": "1.0.0",
+            "runtime_type": "DotNetBinary",
+            "file_extensions": [
+                ".exe",
+                ".dll"
+            ],
+            "detection_strategy": {
+                "checks": [
+                    "pe_header",
+                    "clr_metadata"
+                ],
+                "description": "Validates PE header (MZ) and CLR metadata presence"
+            },
+            "scanner_type": "DotNetRuntimeScanner",
+            "executor_type": "DotNetRuntimeExecutor",
+            "ipc_protocol": "NamedPipe",
+            "enabled": true,
+            "notes": "Fully implemented. Supports WPF, WinForms, Console apps."
+        },
+        {
+            "name": "Java",
+            "version": "0.0.0",
+            "runtime_type": "JavaBinary",
+            "file_extensions": [
+                ".jar"
+            ],
+            "detection_strategy": {
+                "checks": [
+                    "jar_signature",
+                    "manifest_check"
+                ],
+                "description": "Validates ZIP signature and META-INF/MANIFEST.MF"
+            },
+            "scanner_type": "JavaRuntimeScanner",
+            "executor_type": "JavaRuntimeExecutor",
+            "ipc_protocol": "JNI",
+            "enabled": false,
+            "notes": "Planned for v1.1. Requires JNI bridge implementation."
+        },
+        {
+            "name": "PythonPackaged",
+            "version": "0.0.0",
+            "runtime_type": "PythonBinary",
+            "file_extensions": [
+                ".pyz",
+                ".pex"
+            ],
+            "detection_strategy": {
+                "checks": [
+                    "pyz_header",
+                    "embedded_interpreter"
+                ],
+                "description": "Detects PEP 441 .pyz or PyInstaller/py2exe bundles"
+            },
+            "scanner_type": "PythonRuntimeScanner",
+            "executor_type": "PythonRuntimeExecutor",
+            "ipc_protocol": "EmbeddingAPI",
+            "enabled": false,
+            "notes": "Planned for v1.2. May use pythonnet embedding or subprocess IPC."
+        }
+    ],
+    "feature_flags": {
+        "auto_detect_runtime": true,
+        "allow_manual_runtime_selection": true,
+        "cache_scanner_results": true,
+        "enable_plugin_hot_reload": false
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "dependencies": [
+    "sdl2",
+    "sdl2-mixer",
+    "sdl2-net",
+    "libpng",
+    "libsamplerate",
+    "fluidsynth"
+  ]
+}
+

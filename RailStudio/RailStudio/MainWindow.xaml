@@ -1,0 +1,272 @@
+<Window x:Class="RailStudio.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RailStudio"
+        xmlns:views="clr-namespace:RailStudio.Views"
+        xmlns:helpers="clr-namespace:RailStudio.Helpers"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Liquid Studio" Height="768" Width="1024">
+    <Window.Resources>
+        <local:DuplicateToBackgroundConverter x:Key="DuplicateToBackgroundConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="{DynamicResource MaterialDesignPaper}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <ToolBarTray Grid.Column="0" IsLocked="True">
+                <ToolBar Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False">
+                    <Button ToolTip="Open Project" Command="{Binding OpenProjectCommand}">
+                        <materialDesign:PackIcon Kind="FolderOpen" />
+                    </Button>
+                    <Separator />
+                    <Button ToolTip="Build Manifest (Single File)" Command="{Binding BuildCommand}">
+                        <materialDesign:PackIcon Kind="Rocket" />
+                    </Button>
+                    <Button ToolTip="Build Solution (Composite Manifest)" Command="{Binding BuildSolutionCommand}"
+                            Background="#FF4CAF50" Foreground="White" Margin="4,0,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="PackageVariant" Margin="0,0,4,0"/>
+                            <TextBlock Text="Build Solution" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
+
+            <Grid Grid.Column="1" Background="#FF212121"/>
+
+            <ToolBarTray Grid.Column="2" IsLocked="True" HorizontalAlignment="Right" Margin="0,0,-45,0">
+                <ToolBar Style="{DynamicResource MaterialDesignToolBar}" ClipToBounds="False" Padding="0">
+                    <Button ToolTip="Settings" Command="{Binding OpenSettingsCommand}" ToolBar.OverflowMode="Never">
+                        <materialDesign:PackIcon Kind="Cog" />
+                    </Button>
+                    <Separator />
+                    <ToggleButton ToolTip="Show Overloads" IsChecked="{Binding ShowOverloads}" ToolBar.OverflowMode="Never">
+                        <materialDesign:PackIcon Kind="FunctionVariant" />
+                    </ToggleButton>
+                </ToolBar>
+            </ToolBarTray>
+        </Grid>
+
+        <Grid Grid.Row="1" Background="#FF212121" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" MinWidth="200" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" MinHeight="150" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="1*" MinHeight="100" />
+                </Grid.RowDefinitions>
+                
+                <Border Grid.Row="0" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,1,0">
+                    <DockPanel>
+                        <TextBlock Text="Solution Explorer" DockPanel.Dock="Top" Margin="10" FontWeight="Bold" />
+                        <TextBlock Text="{Binding ProjectName}" DockPanel.Dock="Top" Margin="10,0,10,10" FontStyle="Italic" Opacity="0.7" />
+                        
+                        <TreeView ItemsSource="{Binding ProjectRoot}" x:Name="SolutionExplorerTree" BorderThickness="0">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                    <EventSetter Event="Selected" Handler="TreeViewItem_Selected" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#7B68A6" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                    <StackPanel Orientation="Horizontal" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="{Binding Icon}" Margin="0,0,5,0" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+                    </DockPanel>
+                </Border>
+                
+                <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                              Background="{DynamicResource MaterialDesignDivider}" 
+                              ResizeDirection="Rows" />
+                
+                <Border Grid.Row="2" Background="{DynamicResource MaterialDesignPaper}" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,1,0">
+                    <DockPanel>
+                        <TextBlock Text="Assets" DockPanel.Dock="Top" Margin="10" FontWeight="Bold" />
+                        <TextBlock Text="Build Outputs" DockPanel.Dock="Top" Margin="10,0,10,10" FontStyle="Italic" Opacity="0.7" />
+                        
+                        <TreeView ItemsSource="{Binding AssetsRoot}" x:Name="AssetsTree" BorderThickness="0">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem" BasedOn="{StaticResource MaterialDesignTreeViewItem}">
+                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                    <EventSetter Event="Selected" Handler="AssetTreeViewItem_Selected" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#7B68A6" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding IsActiveAsset}" Value="True">
+                                            <Setter Property="FontWeight" Value="Bold" />
+                                            <Setter Property="Foreground" Value="#4CAF50" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                    <StackPanel Orientation="Horizontal" Background="Transparent">
+                                        <materialDesign:PackIcon Kind="{Binding Icon}" Margin="0,0,5,0" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
+                    </DockPanel>
+                </Border>
+            </Grid>
+
+            <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Transparent" />
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
+                <TabControl Grid.Row="0" Style="{StaticResource MaterialDesignTabControl}" SelectedIndex="{Binding SelectedTabIndex}">
+                    <TabItem Header="Preview">
+                        <DataGrid x:Name="PreviewDataGrid"
+                                  ItemsSource="{Binding FunctionModels}" 
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True"
+                                  HeadersVisibility="All"
+                                  SelectionUnit="FullRow"
+                                  VirtualizingPanel.IsVirtualizing="True"
+                                  VirtualizingPanel.VirtualizationMode="Recycling"
+                                  EnableRowVirtualization="True"
+                                  EnableColumnVirtualization="True">
+                           <DataGrid.Resources>
+                               <helpers:BindingProxy x:Key="Proxy" Data="{Binding}"/>
+                           </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Tool Name" Binding="{Binding Name}" Width="200" />
+                                <DataGridTextColumn Header="Assembly" Binding="{Binding Assembly}" Width="120" Visibility="Collapsed"/>
+                                <DataGridTextColumn Header="Class" Binding="{Binding ClassName}" Width="200" />
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="80" />
+                                <DataGridTextColumn Header="Transport" Binding="{Binding Transport}" Width="90" />
+                                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="300" />
+                            </DataGrid.Columns>
+                            
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow" BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsOverload}" Value="True" />
+                                                <Condition Binding="{Binding Data.ShowOverloads, Source={StaticResource Proxy}}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="BorderBrush" Value="#2196F3"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                        </MultiDataTrigger>
+                                        <DataTrigger Binding="{Binding IsDuplicate}" Value="True">
+                                            <Setter Property="BorderBrush" Value="#FFC600"/>
+                                            <Setter Property="BorderThickness" Value="1"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu>
+                                                <MenuItem Header="Show All" 
+                                                          Command="{Binding Data.ShowDuplicatesCommand, Source={StaticResource Proxy}}"
+                                                          CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <materialDesign:PackIcon Kind="ContentDuplicate"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <Separator/>
+                                                <MenuItem Header="Delete Function" 
+                                                          Command="{Binding Data.DeleteFunctionCommand, Source={StaticResource Proxy}}"
+                                                          CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <materialDesign:PackIcon Kind="Delete"/>
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
+                    </TabItem>
+                    <TabItem Header="Design" Visibility="Collapsed">
+                        <Grid>
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Draw" Width="64" Height="64" HorizontalAlignment="Center" Foreground="{DynamicResource PrimaryHueMidBrush}" />
+                                <TextBlock Text="Visual Designer Coming Soon" Style="{StaticResource MaterialDesignHeadline5TextBlock}" Margin="0,20,0,10" HorizontalAlignment="Center" />
+                                <TextBlock Text="This area will allow you to visually design your Liquid workflows." Opacity="0.6" HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+                <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Transparent" />
+
+                <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource MaterialDesignDivider}">
+                    <DockPanel>
+                        <TextBlock Text="Output" Style="{StaticResource MaterialDesignCaptionTextBlock}" Margin="8,4" DockPanel.Dock="Top"/>
+                        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                                 AcceptsReturn="True" 
+                                 VerticalScrollBarVisibility="Auto"
+                                 IsReadOnly="True"
+                                 FontFamily="Consolas"
+                                 BorderThickness="0"
+                                 Text="{Binding OutputLog}" />
+                    </DockPanel>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <StatusBar Grid.Row="2" Background="{DynamicResource MaterialDesignPaper}">
+            <StatusBarItem>
+                <TextBlock Text="Ready" />
+            </StatusBarItem>
+            <Separator Style="{StaticResource MaterialDesignDarkSeparator}" />
+            <StatusBarItem>
+                <TextBlock Text="Python: 3.10" />
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock>
+                    <Run Text="Total Functions: "/>
+                    <Run Text="{Binding TotalFunctionCount}" FontWeight="Bold"/>
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
+

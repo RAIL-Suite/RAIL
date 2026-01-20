@@ -1,0 +1,45 @@
+{
+  "name": "@Rail-os/sdk",
+  "version": "2.0.0",
+  "description": "Universal SDK for Rail Protocol - AI-driven application control",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "Rail",
+    "sdk",
+    "ai",
+    "llm",
+    "automation",
+    "ipc",
+    "ffi"
+  ],
+  "author": "Rail Team <team@Rail.dev>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rail-team/rail-sdk-node"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "ffi-napi": "^4.0.3",
+    "ref-napi": "^3.0.3",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/uuid": "^9.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist",
+    "prebuilds",
+    "README.md"
+  ]
+}
+

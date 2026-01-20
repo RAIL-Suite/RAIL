@@ -1,0 +1,107 @@
+<UserControl x:Class="RailStudio.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:RailStudio.Views"
+             xmlns:vm="clr-namespace:RailStudio.ViewModels"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <vm:SettingsViewModel />
+    </UserControl.DataContext>
+    
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Settings" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Margin="0,0,0,16" />
+
+        <!-- Output Path -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     materialDesign:HintAssist.Hint="Default Output Path"
+                     Text="{Binding OutputPath, UpdateSourceTrigger=PropertyChanged}" />
+            <Button Grid.Column="1" Margin="8,0,0,0" Command="{Binding BrowseOutputCommand}" Style="{StaticResource MaterialDesignOutlinedButton}" ToolTip="Browse">
+                <materialDesign:PackIcon Kind="FolderOpen" />
+            </Button>
+        </Grid>
+
+        <!-- Scan Options Section -->
+        <GroupBox Grid.Row="2" Header="Method Scanning Options" Margin="0,0,0,16" Style="{StaticResource MaterialDesignGroupBox}">
+            <StackPanel Margin="8">
+                <!-- Visibility -->
+                <TextBlock Text="Visibility:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <WrapPanel Margin="0,0,0,12">
+                    <CheckBox Content="Public" IsChecked="{Binding ScanOptions.IncludePublic}" Margin="0,0,12,0"/>
+                    <CheckBox Content="Private" IsChecked="{Binding ScanOptions.IncludePrivate}" Margin="0,0,12,0"/>
+                    <CheckBox Content="Protected" IsChecked="{Binding ScanOptions.IncludeProtected}" Margin="0,0,12,0"/>
+                    <CheckBox Content="Internal" IsChecked="{Binding ScanOptions.IncludeInternal}"/>
+                </WrapPanel>
+
+                <!-- Method Types -->
+                <TextBlock Text="Include:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <WrapPanel Margin="0,0,0,12">
+                    <CheckBox Content="Instance" IsChecked="{Binding ScanOptions.IncludeInstance}" Margin="0,0,12,0"/>
+                    <CheckBox Content="Static" IsChecked="{Binding ScanOptions.IncludeStatic}" Margin="0,0,12,0"/>
+                    <CheckBox Content="Constructors" IsChecked="{Binding ScanOptions.IncludeConstructors}" Margin="0,0,12,0"/>
+                    <CheckBox Content="Properties" IsChecked="{Binding ScanOptions.IncludeProperties}" Margin="0,0,12,0"/>
+                    <CheckBox Content="Operators" IsChecked="{Binding ScanOptions.IncludeOperators}"/>
+                </WrapPanel>
+
+                <!-- Filters -->
+                <TextBlock Text="Filters:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <StackPanel Margin="0,0,0,12">
+                    <CheckBox Content="Exclude System.Object methods (ToString, Equals, etc.)" 
+                              IsChecked="{Binding ScanOptions.ExcludeSystemObjectMethods}" Margin="0,0,0,4"/>
+                    <CheckBox Content="Exclude compiler-generated methods" 
+                              IsChecked="{Binding ScanOptions.ExcludeCompilerGenerated}" Margin="0,0,0,4"/>
+                    <CheckBox Content="Remove duplicate signatures" 
+                              IsChecked="{Binding ScanOptions.RemoveDuplicates}"/>
+                </StackPanel>
+
+                <!-- Schema Options -->
+                <TextBlock Text="Schema Generation:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <StackPanel>
+                    <CheckBox Content="Expand complex types (reflection)" 
+                              IsChecked="{Binding ScanOptions.ExpandComplexTypes}" Margin="0,0,0,8"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Max depth:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Slider Grid.Column="1" Minimum="1" Maximum="5" 
+                                Value="{Binding ScanOptions.MaxReflectionDepth}" 
+                                TickFrequency="1" IsSnapToTickEnabled="True"
+                                VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" 
+                                   Text="{Binding ScanOptions.MaxReflectionDepth}" 
+                                   VerticalAlignment="Center" Margin="8,0,0,0" 
+                                   FontWeight="Bold"/>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Save Button -->
+        <Button Grid.Row="3"
+                Command="{Binding SaveCommand}"
+                Content="Save Settings"
+                HorizontalAlignment="Right"
+                Width="150" />
+    </Grid>
+</UserControl>
+

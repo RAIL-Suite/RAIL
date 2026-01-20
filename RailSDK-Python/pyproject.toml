@@ -1,0 +1,40 @@
+[project]
+name = "Rail-sdk"
+version = "2.0.0"
+description = "Universal SDK for Rail Protocol - AI-driven application control"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Rail Team", email = "team@Rail.dev"}
+]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["Rail", "sdk", "ai", "llm", "automation", "ipc"]
+
+[project.urls]
+Homepage = "https://github.com/Rail-team/Rail-sdk-python"
+Documentation = "https://docs.Rail.dev"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["Rail*"]
+
+[tool.setuptools.package-data]
+Rail = ["*.dll", "*.so", "*.dylib"]
+

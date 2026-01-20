@@ -1,0 +1,19 @@
+{
+    "name": "CppApp",
+    "version": "1.0.0",
+    "runtime_type": "dotnet",
+    "language": "cpp",
+    "description": "C++ Example Application",
+    "tools": [
+        {
+            "name": "GetUptime",
+            "class": "System",
+            "description": "Returns system uptime",
+            "parameters": {
+                "type": "OBJECT",
+                "properties": {},
+                "required": []
+            }
+        }
+    ]
+}
