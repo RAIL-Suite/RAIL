@@ -5,15 +5,17 @@ using WpfRagApp.Services.ApiOrchestration;
 using WpfRagApp.Models;
 using WpfRagApp.Services;
 using WpfRagApp.Services.Host;
+using WpfRagApp.Services.Abstractions;
 
 namespace WpfRagApp.Services.ReAct;
 
 /// <summary>
 /// Orchestrates the ReAct reasoning loop.
+/// Now Provider-Agnostic (works with Gemini, OpenAI, etc via ILLMProvider).
 /// </summary>
 public class ReActOrchestrator
 {
-    private readonly GeminiService _gemini;
+    private readonly ILLMProvider _provider;
     private readonly RailEngine? _engine;
     private readonly HostService? _hostService;
     private readonly ApiSkillToolHandler? _apiToolHandler;
@@ -25,13 +27,13 @@ public class ReActOrchestrator
     public event Action<string>? OnLog;
 
     public ReActOrchestrator(
-        GeminiService gemini, 
+        ILLMProvider provider, 
         RailEngine? engine,
         HostService? hostService = null,
         ReActConfig? config = null,
         ApiSkillToolHandler? apiToolHandler = null)
     {
-        _gemini = gemini;
+        _provider = provider;
         _engine = engine;
         _hostService = hostService;
         _apiToolHandler = apiToolHandler;
@@ -55,6 +57,7 @@ public class ReActOrchestrator
         
         Log($"[ReAct] Starting session for: {userQuery}");
         Log($"[ReAct] Max steps: {_config.MaxSteps}, Model: {model}");
+        Log($"[ReAct] Provider: {_provider.ProviderId}");
 
         try
         {
@@ -62,17 +65,25 @@ public class ReActOrchestrator
             {
                 var stepStart = DateTime.Now;
                 
-                // Call LLM
-                var response = await _gemini.ChatWithToolsAsync(
-                    history, 
-                    null, // We include tools in system prompt for ReAct
-                    model, 
-                    _config.Temperature);
+                // Call LLM via Generic Provider
+                var config = new ProviderConfig 
+                { 
+                    ModelId = model, 
+                    Temperature = _config.Temperature 
+                };
 
-                var responseText = response.Parts?.FirstOrDefault()?.Text ?? string.Empty;
+                var response = await _provider.ChatAsync(history, toolsJson, config, ct);
+
+                // For ReAct, we primarily look at TextContent. 
+                // However, providers like OpenAI might return FunctionCalls directly.
+                // WE SUPPORT BOTH:
+                // 1. Text-based ReAct (Thought + Action lines) -> Classic ReAct
+                // 2. Native Function Calling (response.FunctionCalls) -> Hybrid ReAct
+                
+                var responseText = response.TextContent ?? string.Empty;
                 Log($"[ReAct] Step {session.Steps.Count + 1} response:\n{responseText}");
 
-                ReActStep step;
+                ReActStep step = new ReActStep(); // fallback
                 
                 // Check if this is Generative PowerShell mode
                 bool isGenerativePowerShell = toolsJson.Contains("\"runtime_type\": \"generative_powershell\"", StringComparison.OrdinalIgnoreCase);
@@ -100,7 +111,6 @@ public class ReActOrchestrator
                          }
                          else
                          {
-                             // Empty code block?
                              step.Action = new ReActAction { Type = ReActActionType.Finish, Answer = responseText };
                          }
                      }
@@ -112,15 +122,31 @@ public class ReActOrchestrator
                      }
                      else
                      {
-                         // No code block found.
-                         // If the model is just talking, maybe it's asking for clarification or done.
-                         // For now, treat as Finish.
                          step.Action = new ReActAction { Type = ReActActionType.Finish, Answer = responseText };
                      }
                 }
+                else if (response.FunctionCalls.Any())
+                {
+                    // NATIVE FUNCTION CALLING (OpenAI style)
+                    // The model didn't output "Action: ...", it outputted a structured tool call.
+                    // We adapt this to a ReActStep.
+                    var call = response.FunctionCalls.First(); // ReAct usually handles one step at a time, but could be bulk.
+                    
+                    step = new ReActStep 
+                    { 
+                        Thought = responseText, // Might be empty for OpenAI
+                        Action = new ReActAction
+                        {
+                            Type = ReActActionType.FunctionCall,
+                            FunctionName = call.Name,
+                            Parameters = call.Arguments
+                        }
+                    };
+                    Log($"[ReAct] Native Tool Call detected: {call.Name}");
+                }
                 else
                 {
-                    // STANDARD REACT PARSING
+                    // STANDARD REACT PARSING (Text based)
                     step = _parser.Parse(responseText);
                 }
 
@@ -144,15 +170,15 @@ public class ReActOrchestrator
                         session.AddStep(step);
                         
                         // Add to history
-                        history.Add(new GeminiContent
+                        history.Add(new ProviderMessage
                         {
                             Role = "model",
-                            Parts = new List<GeminiPart> { new GeminiPart { Text = responseText } }
+                            Content = responseText
                         });
-                        history.Add(new GeminiContent
+                        history.Add(new ProviderMessage
                         {
                             Role = "user",
-                            Parts = new List<GeminiPart> { new GeminiPart { Text = $"Observation: {observation}" } }
+                            Content = $"Observation: {observation}"
                         });
                         
                         OnStepCompleted?.Invoke(step);
@@ -165,10 +191,10 @@ public class ReActOrchestrator
                             Log($"[ReAct] Error detected, adding correction hint");
                             
                             // Append hint to last message
-                            var lastPart = history.Last().Parts?.First();
-                            if (lastPart != null)
+                            var lastMsg = history.Last();
+                            if (lastMsg != null)
                             {
-                                lastPart.Text += $"\n\n{hint}";
+                                lastMsg.Content += $"\n\n{hint}";
                             }
                         }
                         break;
@@ -178,20 +204,18 @@ public class ReActOrchestrator
                         session.AddStep(step);
                         
                         // Add correction request to history
-                        history.Add(new GeminiContent
+                        history.Add(new ProviderMessage
                         {
                             Role = "model",
-                            Parts = new List<GeminiPart> { new GeminiPart { Text = responseText } }
+                            Content = responseText
                         });
-                        history.Add(new GeminiContent
+                        history.Add(new ProviderMessage
                         {
                             Role = "user",
-                            Parts = new List<GeminiPart> { new GeminiPart { 
-                                Text = "Your response format was incorrect. Please use the exact ReAct format:\n" +
+                            Content = "Your response format was incorrect. Please use the exact ReAct format:\n" +
                                        "Thought: [your reasoning]\n" +
                                        "Action: FunctionName(param=\"value\") OR Action: FINISH\n\n" +
                                        "Try again with the correct format."
-                            }}
                         });
                         OnStepCompleted?.Invoke(step);
                         break;
@@ -299,8 +323,7 @@ public class ReActOrchestrator
             
             var argsJson = _parser.ParametersToJson(action.Parameters);
             
-            // Decode function name if it was encoded for Gemini API
-            // This reverses the encoding done in SerializeToolsForLLM:
+            // Decode function name if it was encoded for Gemini API (also standardizes for other providers)
             // "WorkflowDemo__GetProduct" → "WorkflowDemo.GetProduct"
             var decodedFunctionName = RailFactory.Core.FunctionNameEncoder.Decode(action.FunctionName!);
             
@@ -384,7 +407,7 @@ public class ReActOrchestrator
     /// <summary>
     /// Build initial conversation history with system prompt.
     /// </summary>
-    private List<GeminiContent> BuildInitialHistory(string userQuery, string toolsJson)
+    private List<ProviderMessage> BuildInitialHistory(string userQuery, string toolsJson)
     {
         // Build system prompt with tools
         bool isGenerativePowerShell = toolsJson.Contains("\"runtime_type\": \"generative_powershell\"", StringComparison.OrdinalIgnoreCase);
@@ -395,15 +418,12 @@ public class ReActOrchestrator
             ? _config.SystemPromptTemplate.Replace("{tools}", "NO TOOLS AVAILABLE. You are in Direct Scripting Mode.") 
             : _config.SystemPromptTemplate.Replace("{tools}", toolsJson);
 
-        var initialMessages = new List<GeminiContent>();
+        var initialMessages = new List<ProviderMessage>();
 
-        initialMessages.Add(new GeminiContent
+        initialMessages.Add(new ProviderMessage
         {
             Role = "user",
-            Parts = new List<GeminiPart> 
-            { 
-                new GeminiPart { Text = $"{systemPrompt}\n\nUSER QUERY: {userQuery}" }
-            }
+            Content = $"{systemPrompt}\n\nUSER QUERY: {userQuery}"
         });
 
         if (isGenerativePowerShell)
@@ -464,7 +484,7 @@ MANDATORY TECHNICAL CONSTRAINTS:
 
 GOAL: Output ONLY the code block.
 ";
-            initialMessages[0].Parts[0].Text += "\n" + injection;
+            initialMessages[0].Content += "\n" + injection;
         }
 
         return initialMessages;
