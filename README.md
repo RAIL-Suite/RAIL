@@ -4,9 +4,9 @@
 
 ---
 
-## 1. What is RAL?
+## 1. What is RAIL?
 
-RAL is a **universal bridge** that connects any application (C#, C++, Python, Node.js) to any LLM (GPT, Claude, Gemini). Instead of rewriting your application, you add **one line of code** and the AI can call your methods directly.
+RAIL is a **universal bridge** that connects any application (C#, C++, Python, Node.js) to any LLM (GPT, Claude, Gemini). Instead of rewriting your application, you add **one line of code** and the AI can call your methods directly.
 
 ---
 
